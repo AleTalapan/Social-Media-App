@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse
-from .models import Profile
+from .models import Profile, Post
 from django.views.decorators.cache import never_cache
 
 
@@ -11,7 +11,25 @@ from django.views.decorators.cache import never_cache
 @never_cache
 def index(request):
     if request.user.is_authenticated:
-        return render(request, 'index.html')
+        user_object = User.objects.get(username=request.user.username)
+        user_profile = Profile.objects.get(user=user_object)
+        return render(request, 'index.html', {'user_profile': user_profile})
+    else:
+        return redirect('signup')
+    
+def upload(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            user = request.user.username
+            image = request.FILES.get('image_upload')
+            caption = request.POST['caption']
+
+            new_post = Post.objects.create(user=user, image=image, caption=caption)
+            new_post.save()
+
+            return redirect('/')
+        else:
+            return redirect('/')
     else:
         return redirect('signup')
 
@@ -46,6 +64,7 @@ def settings(request):
     else:
         return redirect('signup')
     
+
 
 def signup(request):
     if request.method == "POST":
