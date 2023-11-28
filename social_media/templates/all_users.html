@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+</head>
+<body>
+    <!-- header -->
+    <div class="bg-blue-500 py-4 shadow dark:bg-gray-800" style="background-color: #3D82A7;">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center lg:justify-between justify-around">
+                <b><h1 class="text-left" style="font-size: 1rem;">Admin Dashboard</h1></b>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto">
+
+    <table class="w-full border border-gray-300">
+        <thead>
+            <tr class="bg-blue-500 text-white">
+                <th class="py-2 px-4 border-b" style="text-align: left;">Username</th>
+                <th class="py-2 px-4 border-b" style="text-align: left;">Email address</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for user in users %}
+            <tr class="bg-gray-200 hover:bg-gray-100">
+                <td class="py-2 px-4 border-b">{{ user.username }}</td>
+                <td class="py-2 px-4 border-b">{{user.email}}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+        <button id="addUserButton" class="mt-4 bg-gradient-to-br from-pink-500 to-red-400 py-2 rounded-md text-white text-sm w-full">Add User</button>
+        <form action="" method="POST">
+            {% csrf_token %}
+        <div id="userFields" class="hidden mt-4">
+            <label for="username" class="block text-gray-700">Username:</label>
+            <input type="text" id="username" name="username">
+
+            <label for="password" class="block text-gray-700 mt-2">Password:</label>
+            <input type="password" id="password" name="password">
+
+            <label for="confirmPassword" class="block text-gray-700 mt-2">Confirm password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword">
+
+            <button type="submit" class="mt-4 bg-gradient-to-br from-pink-500 to-red-400 py-2 rounded-md text-white text-sm w-full">Save</button>
+        </div>
+        </form>
+
+    </div>
+<script>
+        document.getElementById('addUserButton').addEventListener('click', function() {
+            var userFields = document.getElementById('userFields');
+            userFields.classList.toggle('hidden');
+        });
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+</head>
+<body>
+<!-- header -->
+    <div class="bg-blue-500 py-4 shadow dark:bg-gray-800" style="background-color: #3D82A7;">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center lg:justify-between justify-around">
+                <b><h1 class="text-left" style="font-size: 1rem;">Admin Dashboard</h1></b>
+            </div>
+        </div>
+    </div>
+
+<div class="max-w-6xl mx-auto">
+
+    <table class="w-full border border-gray-300">
+        <thead>
+            <tr class="bg-blue-500 text-white">
+                <th class="py-2 px-4 border-b" style="text-align: left;">Post</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for post in posts %}
+            <tr class="bg-gray-200 hover:bg-gray-100">
+                <td class="py-2 px-4 border-b">{{ post.user }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

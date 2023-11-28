@@ -10,6 +10,37 @@ import random
 
 # Create your views here.
 @never_cache
+def admin_dashboard(request):
+    profiles = Profile.objects.all()
+    posts = Post.objects.all()
+    like_posts = LikePost.objects.all()
+    followers_count = FollowersCount.objects.all()
+
+    return render(request, 'admin_dashboard.html', {
+        'profiles': profiles,
+        'posts': posts,
+        'like_posts': like_posts,
+        'followers_count': followers_count,
+    })
+def all_users(request):
+    users = User.objects.all()
+    return render(request, 'all_users.html', {'users': users})
+
+def all_profiles(request):
+    profiles = Profile.objects.all().order_by('user__username')
+    return render(request, 'all_profiles.html', {'profiles': profiles})
+
+def all_posts(request):
+    posts = Post.objects.all()
+    return render(request, 'all_posts.html', {'posts': posts})
+
+def all_followers(request):
+    followers_count = FollowersCount.objects.all()
+    return render(request, 'all_followers.html', {'followers_count': followers_count})
+
+def all_likedPosts(request):
+    like_posts = LikePost.objects.all()
+    return render(request, 'all_likedPosts.html', {'like_posts': like_posts})
 def index(request):
     if request.user.is_authenticated:
         user_object = User.objects.get(username=request.user.username)

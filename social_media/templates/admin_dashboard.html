@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+</head>
+<body>
+
+
+    <!-- header -->
+    <div class="bg-blue-500 py-4 shadow dark:bg-gray-800" style="background-color: #3D82A7;">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center lg:justify-between justify-around">
+                <b><h1 class="text-left" style="font-size: 1rem;">Admin Dashboard</h1></b>
+            </div>
+        </div>
+    </div>
+
+    <!-- rows -->
+    <div class="max-w-6xl mx-auto">
+    <table class="w-full border border-gray-300">
+
+
+            <tr class="bg-gray-200 hover:bg-gray-100">
+                <td class="py-2 px-4 border-b">Users</td>
+                <td class="py-2 px-4 border-b"><a href="/all_users" class="text-blue-500">View Users</a></td>
+            </tr>
+            <tr class="bg-gray-200 hover:bg-gray-100">
+                <td class="py-2 px-4 border-b">Followers Count</td>
+                <td class="py-2 px-4 border-b"><a href="/all_followers" class="text-blue-500">View Followers Count</a></td>
+            </tr>
+            <tr class="bg-gray-200 hover:bg-gray-100">
+                <td class="py-2 px-4 border-b">Liked Posts</td>
+                <td class="py-2 px-4 border-b"><a href="#" class="text-blue-500">View Liked Posts</a></td>
+            </tr>
+            <tr class="bg-gray-200 hover:bg-gray-100">
+                <td class="py-2 px-4 border-b">Posts</td>
+                <td class="py-2 px-4 border-b"><a href="/all_posts" class="text-blue-500">View Posts</a></td>
+            </tr>
+        <tr class="bg-gray-200 hover:bg-gray-100">
+            <td class="py-2 px-4 border-b">Profiles</td>
+            <td class="py-2 px-4 border-b"><a href="/all_profiles" class="text-blue-500">View Profiles</a></td>
+        </tr>
+
+    </table>
+    </div>
+
+
+
+
+</body>
+</html>
