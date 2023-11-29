@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse
@@ -11,36 +11,120 @@ import random
 # Create your views here.
 @never_cache
 def admin_dashboard(request):
-    profiles = Profile.objects.all()
-    posts = Post.objects.all()
-    like_posts = LikePost.objects.all()
-    followers_count = FollowersCount.objects.all()
-
-    return render(request, 'admin_dashboard.html', {
-        'profiles': profiles,
-        'posts': posts,
-        'like_posts': like_posts,
-        'followers_count': followers_count,
-    })
+    if request.user.is_staff:
+        return render(request, 'admin_dashboard.html')
+    else:
+        return redirect('signup')
 def all_users(request):
-    users = User.objects.all()
-    return render(request, 'all_users.html', {'users': users})
+    if request.user.is_staff:
+        if request.method == "POST":
+            delete_user_id = request.POST.get('deleteUserId')
+            if delete_user_id:
+                try:
+                    user_to_delete = User.objects.get(pk=delete_user_id)
+                    user_to_delete.delete()
+                    messages.success(request, 'User deleted successfully')
+                except User.DoesNotExist:
+                    messages.error(request, 'User not found')
+
+                return redirect('all_users')
+
+            username = request.POST['username']
+            email = request.POST['email']
+            password = request.POST['password']
+            confirmPassword = request.POST['confirmPassword']
+
+            if password == confirmPassword:
+                if User.objects.filter(email=email).exists():
+                    messages.info(request, 'Email Taken')
+                    return redirect('all_users')
+                elif User.objects.filter(username=username).exists():
+                    messages.info(request, 'Username Taken')
+                    return redirect('all_users')
+                else:
+                    user = User.objects.create_user(username=username, email=email, password=password)
+                    user.save()
+
+                    user_login = auth.authenticate(username=username, password=password)
+                    auth.login(request, user_login)
+
+                    user_model = User.objects.get(username=username)
+                    new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
+                    new_profile.save()
+                    return redirect('all_users')
+            else:
+                messages.info(request, 'Password Not Matching')
+                return redirect('all_users')
+
+        else:
+            users = User.objects.all()
+            return render(request, 'all_users.html', {'users': users})
+    else:
+        return redirect('signup')
 
 def all_profiles(request):
-    profiles = Profile.objects.all().order_by('user__username')
-    return render(request, 'all_profiles.html', {'profiles': profiles})
+    if request.user.is_staff:
+        if request.method == "POST":
+            profile_id = request.POST.get('delete_profile')
+            profile_to_delete = get_object_or_404(Profile, id_user=profile_id)
+            profile_to_delete.delete()
+            return redirect('all_profiles')
+        else:
+            profiles = Profile.objects.all().order_by('user__username')
+            return render(request, 'all_profiles.html', {'profiles': profiles})
+    else:
+        return redirect('signup')
 
 def all_posts(request):
-    posts = Post.objects.all()
-    return render(request, 'all_posts.html', {'posts': posts})
-
+    if request.user.is_staff:
+        if request.method == "POST":
+            post_id = request.POST.get('delete_post')
+            post_to_delete = get_object_or_404(Post, id=post_id)
+            post_to_delete.delete()
+            return redirect('all_posts')
+        else:
+            posts = Post.objects.all()
+            return render(request, 'all_posts.html', {'posts': posts})
+    else:
+        return redirect('signup')
 def all_followers(request):
-    followers_count = FollowersCount.objects.all()
-    return render(request, 'all_followers.html', {'followers_count': followers_count})
+    if request.user.is_staff:
+        if request.method == "POST":
+            follower = request.POST['delete_follower']
+            user = request.POST['delete_user']
+
+            if FollowersCount.objects.filter(follower=follower, user=user).first():
+                delete_follower = FollowersCount.objects.get(follower=follower, user=user)
+                delete_follower.delete()
+
+            return redirect('all_followers')
+        else:
+            followers_count = FollowersCount.objects.all()
+            return render(request, 'all_followers.html', {'followers_count': followers_count})
+    else:
+        return redirect('signup')
 
 def all_likedPosts(request):
-    like_posts = LikePost.objects.all()
-    return render(request, 'all_likedPosts.html', {'like_posts': like_posts})
+    if request.user.is_staff:
+        if request.method == "POST":
+            username = request.user.username
+            post_id = request.POST.get('delete_like')
+
+            post = Post.objects.get(id=post_id)
+
+            if LikePost.objects.filter(post_id=post_id, username=username).first():
+                print("aa")
+                like_filter = LikePost.objects.filter(post_id=post_id, username=username).first()
+                like_filter.delete()
+                post.no_of_likes = post.no_of_likes - 1
+                post.save()
+
+            return redirect('all_likedPosts')
+        else:
+            like_posts = LikePost.objects.all()
+            return render(request, 'all_likedPosts.html', {'like_posts': like_posts})
+    else:
+        return redirect('signup')
 def index(request):
     if request.user.is_authenticated:
         user_object = User.objects.get(username=request.user.username)
@@ -272,7 +356,11 @@ def signin(request):
 
         if user is not None:
             auth.login(request, user)
-            return redirect('/')
+            if user.is_staff:
+                return redirect('admin_dashboard')  # Înlocuiește 'admin_dashboard' cu ruta către panoul de administrare
+            else:
+                return redirect('/')
+
         else:
             messages.info(request, 'Credentials Invalid')
             return redirect('signin')

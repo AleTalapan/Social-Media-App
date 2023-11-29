@@ -35,7 +35,15 @@
         {% for post in posts %}
             <tr class="bg-gray-200 hover:bg-gray-100">
                 <td class="py-2 px-4 border-b">{{ post.user }}</td>
+                <td class="py-2 px-4 border-b">
+                <form action="" method="POST" style="display: inline-block;">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{post.id}}" name="delete_post" />
+                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-md" onclick="return confirm('Are you sure you want to delete this follower?')">Delete</button>
+                </form>
+                </td>
             </tr>
+
         {% endfor %}
 
         </tbody>
